@@ -9,8 +9,7 @@ const cUSDContractAddress = "0x874069Fa1Eb16D44d622F2e0Ca25eeA172369bC1"
 let kit
 let cUSDcontract
 
-let anAddress = '0xD86518b29BB52a5DAC5991eACf09481CE4B0710d'
-let amount = "10000000000000000"
+
 
 const connectCeloWallet = async function () {
   if (window.celo) {
@@ -35,8 +34,14 @@ const connectCeloWallet = async function () {
 }
 
 async function send() {
+  let celoAddress = document.getElementById("addr").value
+  let sendamount
+  const web3 = new Web3(window.celo)
+  sendamount = document.getElementById("amt").value
+  sendamount = web3.utils.toWei(sendamount, 'ether');
+  console.log(sendamount)
   const result = await cUSDcontract.methods
-    .transfer(anAddress, amount)
+    .transfer(celoAddress, sendamount)
     .send({ from: kit.defaultAccount })
   getBalance()
   showTxHash(result.transactionHash) 
@@ -46,6 +51,7 @@ async function send() {
 const getBalance = async function () {
   const totalBalance = await kit.getTotalBalance(kit.defaultAccount)
   const cUSDBalance = totalBalance.cUSD.shiftedBy(-ERC20_DECIMALS).toFixed(2)
+  console.log(cUSDBalance)
   document.querySelector("#balance").textContent = cUSDBalance
 }
 
